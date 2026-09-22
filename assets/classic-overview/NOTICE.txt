@@ -1,0 +1,5 @@
+Original unmodified Micropolis classic overview and demand artwork.
+Source: https://github.com/SimHacker/micropolis
+Commit: c98f6b08519887b450d9be198bfca5237aab6d0c
+Files: micropolis-activity/images/tilessm.xpm, demandg.xpm.
+This AROS frontend and generated embedding are adaptations.

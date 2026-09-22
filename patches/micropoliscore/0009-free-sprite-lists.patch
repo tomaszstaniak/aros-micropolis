@@ -1,0 +1,54 @@
+Title: 0009-free-sprite-lists
+Repository: micropoliscore
+Base-Commit: 69ccf87ed72d2d2950b70cf16ef1391439bd9d48
+Requires: 0008-scenario-load-errors.patch
+Author: aros-micropolis project
+Date: 2026-09-20
+Upstream-Status: candidate
+Scope: generic native engine lifetime; no gameplay behavior change
+
+Problem:
+  Micropolis::destroy() released map arrays but retained every active and pooled SimSprite. Repeated startup previews therefore accumulated native heap objects and their std::string members.
+Solution:
+  Delete both disjoint sprite ownership lists, clear their global aliases, then release map arrays. A host allocation-tracking regression covers active and pooled objects under ASan/UBSan.
+Validation:
+  Host clang C++17, ASan/UBSan: tests/engine-lifetime/run-tests.sh tracks
+  allocations made by newSprite() and verifies that destroying a city releases
+  both active and pooled objects (1/1, 2026-09-20). Existing real-engine suites:
+  startup 60/60, disasters/scenarios 125/125, budget 0 failures, simulation
+  14/14 plus timer 13/13, sprite renderer 16/16. Full nine-patch isolated
+  reproduction passes. Complete game compiles and links for AROS One ABIv11
+  and mainline v1; no guest runtime was needed or claimed for this ownership fix.
+Removal:
+  Permanent ownership fix; remove only if upstream adopts equivalent cleanup.
+
+diff --git a/packages/micropolis-engine/src/micropolis.cpp b/packages/micropolis-engine/src/micropolis.cpp
+index e0024b2..55d1e49 100644
+--- a/packages/micropolis-engine/src/micropolis.cpp
++++ b/packages/micropolis-engine/src/micropolis.cpp
+@@ -704,9 +704,24 @@ void Micropolis::init()
+ void Micropolis::destroy()
+ {
+ 
++    // Active sprites and the reuse pool are disjoint lists of objects made
++    // with new SimSprite().  They own std::string members, so release them
++    // with delete rather than the engine's raw-memory helpers.
++    while (spriteList != NULL) {
++        SimSprite *sprite = spriteList;
++        spriteList = sprite->next;
++        delete sprite;
++    }
++    while (freeSprites != NULL) {
++        SimSprite *sprite = freeSprites;
++        freeSprites = sprite->next;
++        delete sprite;
++    }
++    memset(globalSprites, 0, sizeof(SimSprite *) * SPRITE_COUNT);
++
+     destroyMapArrays();
+ 
+-    // TODO: Clean up all other stuff:
++    // TODO: Clean up other engine-owned resources.
+ 
+ }
+ 

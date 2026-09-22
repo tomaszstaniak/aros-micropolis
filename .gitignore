@@ -1,0 +1,35 @@
+# Generated dependencies and build outputs. Adapt to the selected stack.
+/build/
+/dist/
+/target/
+/node_modules/
+/deps/
+
+# Local copies in the optional upstream-patches workflow.
+/upstream/
+/work/
+
+# Mutable local state; ignored does not mean disposable.
+/var/
+/local.json
+/.env
+/.env.local
+/.worktrees/
+
+# Raw study material is local by default; keep the source index versioned.
+/references/*
+!/references/README.md
+
+# Host metadata.
+.DS_Store
+Thumbs.db
+__pycache__/
+
+# Assets, content, source datasets, fixtures and packaging sources are NOT
+# blanket-ignored. Record any collection-specific policy in the directory map.
+
+# Host-harness run artifact (created when build/host/harness runs from the project root).
+/MICRES.TXT
+
+# Machine-local configuration (see local.env.example).
+/local.env

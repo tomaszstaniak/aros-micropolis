@@ -1,0 +1,47 @@
+Title: 0005-autobudget-service-spending
+Repository: micropoliscore
+Base-Commit: 69ccf87ed72d2d2950b70cf16ef1391439bd9d48
+Requires: 0004-savefile-check-fclose.patch
+Author: aros-micropolis project
+Date: 2026-09-17
+Upstream-Status: candidate
+Scope: Engine automatic budget settlement; all native and WASM targets
+
+Problem:
+  Automatic budget debits selected funding but records full service spending, giving full service effects after cuts.
+Solution:
+  Record allocated fireValue/policeValue/roadValue and update service effects after annual settlement, never during menu previews.
+Validation:
+  Host ASan/UBSan: tests/budget/run-tests.sh verifies real annual settlement
+  reduces service effects without a test-side updateFundEffects() call.
+  The native ABIv11 budget test also passes on AROS One.
+Removal:
+  Permanent engine correction; remove when the pinned upstream includes it.
+
+diff --git a/packages/micropolis-engine/src/budget.cpp b/packages/micropolis-engine/src/budget.cpp
+index aaaa0cf..2432fdd 100644
+--- a/packages/micropolis-engine/src/budget.cpp
++++ b/packages/micropolis-engine/src/budget.cpp
+@@ -97,6 +97,8 @@ void Micropolis::initFundingLevel()
+ void Micropolis::doBudget()
+ {
+     doBudgetNow(false);
++    // A yearly settlement changes paid service levels. Menu previews must not.
++    updateFundEffects();
+ }
+ 
+ 
+@@ -303,9 +305,10 @@ noMoney:
+             Quad moreDough = (Quad)(taxFund - total);
+             spend(-moreDough);
+ 
+-            fireSpend = fireFund;
+-            policeSpend = policeFund;
+-            roadSpend = roadFund;
++            // Service effects must match the amounts actually funded above.
++            fireSpend = fireValue;
++            policeSpend = policeValue;
++            roadSpend = roadValue;
+ 
+             mustDrawBudget = 1;
+             doUpdateHeads();

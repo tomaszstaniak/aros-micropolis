@@ -1,0 +1,9 @@
+{
+  "url": "https://github.com/SimHacker/micropolis.git",
+  "commit": "c98f6b08519887b450d9be198bfca5237aab6d0c",
+  "path": "micropolis-activity/images",
+  "files": [
+    {"name": "tilessm.xpm", "sha256": "acaefd1b0d5367767849744768abfb95fc22e542cdd99b6050af69f1307e6f58"},
+    {"name": "demandg.xpm", "sha256": "9473e7fdfcfbb1a3806a950a6e6d3a46c9274490b9884fcc601b050c31887da3"}
+  ]
+}

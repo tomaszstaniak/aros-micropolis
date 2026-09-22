@@ -1,0 +1,60 @@
+Title: 0006-restore-saved-service-funding
+Repository: micropoliscore
+Base-Commit: 69ccf87ed72d2d2950b70cf16ef1391439bd9d48
+Requires: 0005-autobudget-service-spending.patch
+Author: aros-micropolis project
+Date: 2026-09-17
+Upstream-Status: candidate
+Scope: City file loading on all engine targets
+
+Problem:
+  loadFile overwrites byte-swapped funding with unswapped values, then resets all funding percentages to 100 percent.
+Solution:
+  Initialize defaults before decoding, retain corrected fixed-point values, and clamp corrupt percentages.
+Validation:
+  Host ASan/UBSan and native ABIv11 budget tests: 12 assertions pass, including
+  engine save/load round-trip.
+Removal:
+  Permanent correctness fix; remove once equivalent upstream changes are adopted.
+
+diff --git a/packages/micropolis-engine/src/fileio.cpp b/packages/micropolis-engine/src/fileio.cpp
+index e2b4c80..9d7c3ba 100644
+--- a/packages/micropolis-engine/src/fileio.cpp
++++ b/packages/micropolis-engine/src/fileio.cpp
+@@ -338,6 +338,7 @@ bool Micropolis::loadFile(const std::string &filename)
+     HALF_SWAP_LONGS(&n, 1);
+     cityTime = n;
+ 
++    initFundingLevel(); // Defaults before decoding saved funding, not after.
+     setAutoBulldoze(miscHist[52] != 0);   // flag for autoBulldoze
+     setAutoBudget(miscHist[53] != 0);     // flag for autoBudget
+     setAutoGoto(miscHist[54] != 0);       // flag for auto-goto
+@@ -360,15 +361,11 @@ bool Micropolis::loadFile(const std::string &filename)
+     HALF_SWAP_LONGS(&n, 1);
+     roadPercent = (float)n / (float)65536.0;
+ 
+-    policePercent =
+-        (float)(*(Quad*)(miscHist + 58)) /
+-        (float)65536.0;   /* and 59 */
+-    firePercent =
+-        (float)(*(Quad*)(miscHist + 60)) /
+-        (float)65536.0;   /* and 61 */
+-    roadPercent =
+-        (float)(*(Quad*)(miscHist + 62)) /
+-        (float)65536.0;   /* and 63 */
++    // Values above already have their word order corrected. Reject corrupt
++    // funding data instead of undoing conversion or resetting valid choices.
++    policePercent = max(0.0f, min(1.0f, policePercent));
++    firePercent = max(0.0f, min(1.0f, firePercent));
++    roadPercent = max(0.0f, min(1.0f, roadPercent));
+ 
+     cityTime = max((Quad)0, cityTime);
+ 
+@@ -384,7 +381,6 @@ bool Micropolis::loadFile(const std::string &filename)
+ 
+     setSpeed(simSpeed);
+     setPasses(1);
+-    initFundingLevel();
+ 
+     // Set the scenario id to 0.
+     initWillStuff();

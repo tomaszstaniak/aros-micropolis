@@ -1,0 +1,2 @@
+# Raw P6 screen captures are binary pixel data.
+*.ppm binary

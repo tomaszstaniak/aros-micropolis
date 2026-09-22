@@ -1,0 +1,67 @@
+Title: 0003-construct-simsprite
+Repository: micropoliscore
+Base-Commit: 69ccf87ed72d2d2950b70cf16ef1391439bd9d48
+Requires: 0002-voteproblems-off-by-one.patch
+Author: aros-micropolis project
+Date: 2026-09-15
+Upstream-Status: candidate
+Scope: generic - any native platform with libstdc++; hidden in WASM by zeroed heap
+
+Problem:
+  SimSprite contains a std::string member, but newSprite() allocated it with newPtr() (plain malloc), then immediately assigned sprite->name. An unconstructed std::string is undefined behavior on any platform: it 'worked' in WASM because a freshly zeroed heap happens to form a valid empty libc++ string; on dirty malloc memory (host, AROS) it crashed with SEGV in string assign (host ASan run, sprite.cpp:117 via generatePlane -> makeSprite -> newSprite during loadFile). Additionally spriteList/freeSprites/globalSprites[] are read (pool walk, getSprite) before any assignment, so uninitialized values send the pool down a garbage pointer.
+Solution:
+  Construct SimSprite properly with 'new SimSprite()' (value-initialization also zeroes the POD members; sprites are pooled and never individually freed, so no matching delete is needed). Initialize spriteList/freeSprites in the constructor initializer list and zero the globalSprites[] array in the constructor body.
+Validation:
+  Host: ASan build (build/host/harness), 192 phases of haight.cty, clean
+  (2026-09-15). Guest: AROS One 1.3 (ABIv11) under QEMU/TCG, GCC 10.5.0,
+  192 phases, clean exit, RESULT cityTime=4851 year=2001 month=0.
+  Scope: headless
+  harness only - no UI, no scenario path, no save.
+Removal:
+  Fill in when this is a workaround; permanent fixes say so here.
+
+diff --git a/packages/micropolis-engine/src/micropolis.cpp b/packages/micropolis-engine/src/micropolis.cpp
+index 63925da..e0024b2 100644
+--- a/packages/micropolis-engine/src/micropolis.cpp
++++ b/packages/micropolis-engine/src/micropolis.cpp
+@@ -114,8 +114,19 @@ Micropolis::Micropolis() :
+         // as callback, same crash on dirty malloc memory.
+         mapBase(0),
+         mopBase(0),
+-        historyInitialized(false)
++        historyInitialized(false),
++        // Sprite bookkeeping is read (getSprite/newSprite walk these) before
++        // anything assigns them; uninitialized values send the pool down a
++        // garbage pointer. Same zeroed-heap luck as the other members.
++        spriteList(0),
++        freeSprites(0)
+ {
++    // globalSprites[] is an array - zero it in the body, the initializer
++    // list cannot.
++    for (int i = 0; i < SPRITE_COUNT; i++) {
++        globalSprites[i] = (SimSprite *)NULL;
++    }
++
+     initMapArrays();
+ }
+ 
+diff --git a/packages/micropolis-engine/src/sprite.cpp b/packages/micropolis-engine/src/sprite.cpp
+index 5cab2c8..884d5dd 100644
+--- a/packages/micropolis-engine/src/sprite.cpp
++++ b/packages/micropolis-engine/src/sprite.cpp
+@@ -111,7 +111,14 @@ SimSprite *Micropolis::newSprite(const std::string &name, int type, int x, int y
+         sprite = freeSprites;
+         freeSprites = sprite->next;
+     } else {
+-        sprite = (SimSprite *)newPtr(sizeof (SimSprite));
++        // SimSprite contains a std::string, so raw malloc memory is not a
++        // SimSprite: assigning sprite->name below would operate on an
++        // unconstructed string object. A freshly zeroed WASM heap happens
++        // to form a valid empty libc++ string, which is why the browser
++        // build never crashed; libstdc++ (AROS) has no such luck. Only a
++        // real constructor makes this defined behavior. Sprites are pooled
++        // and never individually freed, so there is no matching delete.
++        sprite = new SimSprite();
+     }
+ 
+     sprite->name = name;

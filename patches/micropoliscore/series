@@ -1,0 +1,9 @@
+0001-init-uninitialized-members.patch
+0002-voteproblems-off-by-one.patch
+0003-construct-simsprite.patch
+0004-savefile-check-fclose.patch
+0005-autobudget-service-spending.patch
+0006-restore-saved-service-funding.patch
+0007-packed-city-fields.patch
+0008-scenario-load-errors.patch
+0009-free-sprite-lists.patch

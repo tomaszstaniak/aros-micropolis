@@ -1,0 +1,151 @@
+{
+  "url": "https://github.com/SimHacker/micropolis.git",
+  "commit": "c98f6b08519887b450d9be198bfca5237aab6d0c",
+  "path": "micropolis-activity/images",
+  "files": [
+    {
+      "name": "icres.xpm",
+      "sha256": "299deaf5707be0514bd970d2ca54bd951e250515fb2654238562ace623215cab"
+    },
+    {
+      "name": "icreshi.xpm",
+      "sha256": "2cd95b7d5b9825f2700b336705a3fab6099f539b71ae5bf063d8635c7571cbeb"
+    },
+    {
+      "name": "iccom.xpm",
+      "sha256": "7a4f73c7fa226d2a00b25cb612933f45ceb00aaf55e8a57027e0f9be9a6de3a1"
+    },
+    {
+      "name": "iccomhi.xpm",
+      "sha256": "af90f2782a4f4414a4bcef7a54c19672dfaa6afe78ae60d052a9768efcbaffea"
+    },
+    {
+      "name": "icind.xpm",
+      "sha256": "57f60c46991861c99fdfdb7a5a6753f35abd7648061162995844e354d7316155"
+    },
+    {
+      "name": "icindhi.xpm",
+      "sha256": "6df7b340eed698f8115c481b9aae8044640d77aa29b6c8f12aaf5e0eea0124b5"
+    },
+    {
+      "name": "icfire.xpm",
+      "sha256": "440b2de913bda05a01eff376e1ce22941d9b6ebdead7d4c6537400190883d5e7"
+    },
+    {
+      "name": "icfirehi.xpm",
+      "sha256": "28a697d93b5894a8c9ec23df76969cc53fc15a41713e2a6ee7b03701fa0ad8d3"
+    },
+    {
+      "name": "icqry.xpm",
+      "sha256": "8da5098cf6dabe016067541f45ba3c092ee25d8dc111efa29782e1a6fce6c1d5"
+    },
+    {
+      "name": "icqryhi.xpm",
+      "sha256": "4f9849d86f36cf1a9a681c309e1a5ecf9387c78969a7fead806041e3288ccac5"
+    },
+    {
+      "name": "icpol.xpm",
+      "sha256": "99adc01c6030281cf39a362afe90a006ae7acd4cab27f523a0891fadcb964c1a"
+    },
+    {
+      "name": "icpolhi.xpm",
+      "sha256": "237f2ecb37b628c6d4b0b819d577f82e6b2f8d8b575bc0e8074901711cb025bc"
+    },
+    {
+      "name": "icwire.xpm",
+      "sha256": "17c6aedb7af7b918d68c7c5c08af65089a95c8e7c91609fddc1ffb1a966b9dd6"
+    },
+    {
+      "name": "icwirehi.xpm",
+      "sha256": "e525fcadaa3f86712fbeb304c74a60b5c0e425e4ed5757eec71b85710a9a3ef9"
+    },
+    {
+      "name": "icdozr.xpm",
+      "sha256": "8042bb95dad70a85fae0648615df98e760b406eedf182c941f626e6cb28d9cb6"
+    },
+    {
+      "name": "icdozrhi.xpm",
+      "sha256": "196f4070150a051a6bfae0e5413a5cb6c53cc82b391301833c9e939d9f2a9707"
+    },
+    {
+      "name": "icrail.xpm",
+      "sha256": "dd8e130dcfe4db69d707c83cee3e8bb50878cfe57562254d20682560b9b8e40f"
+    },
+    {
+      "name": "icrailhi.xpm",
+      "sha256": "f31503ee01521ea9ae15c8174d48e4d148aee55af59e009b1c64094bb8596708"
+    },
+    {
+      "name": "icroad.xpm",
+      "sha256": "37470953fe4fd21646679c8a490884a364f5a282aa1249ab2a4220e49f097934"
+    },
+    {
+      "name": "icroadhi.xpm",
+      "sha256": "ab6e46fb132c54052309c24d2acdd4ae3ebfc76870f32e8ab4bd16131e73dd04"
+    },
+    {
+      "name": "icchlk.xpm",
+      "sha256": "4572c709eb96b0be97f049534d40e78b18d072736f1effee01beb1d2493282b0"
+    },
+    {
+      "name": "icchlkhi.xpm",
+      "sha256": "cbc195b72498ec9a3bc572884c2a9c7632cb27747fe0fe397b52d705b2c1188e"
+    },
+    {
+      "name": "icersr.xpm",
+      "sha256": "21c5a00f0923cdd03fb22c0a4a31b1e3f622a8262c9b48f63c73a910423efa46"
+    },
+    {
+      "name": "icersrhi.xpm",
+      "sha256": "97559bf066dcf8cfad8754ac6a797a1814fc4bff1305e8742e2535f62d0434c1"
+    },
+    {
+      "name": "icstad.xpm",
+      "sha256": "09df99e7e6930d09d90459dc723af15bdc8c7b94251fdc91cc4f0e4cd2d90c43"
+    },
+    {
+      "name": "icstadhi.xpm",
+      "sha256": "359978d15b24174c43fd48fae102c36753067be351030be5057b53245f36119e"
+    },
+    {
+      "name": "icpark.xpm",
+      "sha256": "2fbd71c6463c67fcad8651b83ba935285ee401382f482913431c221baa886368"
+    },
+    {
+      "name": "icparkhi.xpm",
+      "sha256": "a6e6214907a6bf31d43b5a64910510c24107ebac554c3771b0736b292f894cbe"
+    },
+    {
+      "name": "icseap.xpm",
+      "sha256": "7650b087f8e5af00af575f12ef8982197f9b86085f460c9336d8ef14ede0ce4e"
+    },
+    {
+      "name": "icseaphi.xpm",
+      "sha256": "f230fad208f9e0c38d5d6e1a2b6e7f5dc55b6bb822f5433823fe2456c9f5fbe6"
+    },
+    {
+      "name": "iccoal.xpm",
+      "sha256": "cfd8c150bddb80b1224c6f3d4c888fc26b8f972ebae4ec4bf902aa0c202a44b4"
+    },
+    {
+      "name": "iccoalhi.xpm",
+      "sha256": "97d1bf082dd3071585e438b9149c6dc4307216b1f562017d9ae02aed32d132ee"
+    },
+    {
+      "name": "icnuc.xpm",
+      "sha256": "c97374fb5f6c147c9904d192d1e3a1f62205cf81dc179db9de01f43e9e4397b8"
+    },
+    {
+      "name": "icnuchi.xpm",
+      "sha256": "c4a2aa35355a9b58f3f66b1d6d67d49957e928695fa557b7897168e7eb8058ba"
+    },
+    {
+      "name": "icairp.xpm",
+      "sha256": "f7ca8ce2f64cb76e81a2443366699a10c87d5d8fc8e2fb1ef35840162a27f012"
+    },
+    {
+      "name": "icairphi.xpm",
+      "sha256": "557fa3853a8cf6d9ae678b4e5c36b75673beb95fe2823bde8760cce0029def0e"
+    }
+  ]
+}

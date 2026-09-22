@@ -1,0 +1,73 @@
+Title: 0008-scenario-load-errors
+Repository: micropoliscore
+Base-Commit: 69ccf87ed72d2d2950b70cf16ef1391439bd9d48
+Requires: 0007-packed-city-fields.patch
+Author: aros-micropolis project
+Date: 2026-09-19
+Upstream-Status: candidate
+Scope: Engine scenario loader on all platforms; native frontend uses isolated previews.
+
+Problem:
+  Native scenario loading constructs std::string from NULL and ignores missing or truncated city files.
+Solution:
+  Initialize empty strings and return a checked boolean load result. Frontends can select transactionally using a fresh simulator.
+Validation:
+  2026-09-19: tests/startup/run-tests.sh 60/60 with ASan/UBSan; all eight scenarios, missing and truncated city failure.
+  ABIv11 guest: Tokyo preview -> Play -> sim step; both ABI builds; complete series reproduction.
+  WASM build not tested.
+Removal:
+  Permanent correctness fix; remove when an equivalent checked loader is in the pinned upstream.
+
+diff --git a/packages/micropolis-engine/src/fileio.cpp b/packages/micropolis-engine/src/fileio.cpp
+index 3bf827d..10d0345 100644
+--- a/packages/micropolis-engine/src/fileio.cpp
++++ b/packages/micropolis-engine/src/fileio.cpp
+@@ -404,10 +404,10 @@ bool Micropolis::saveFile(const std::string &filename)
+  * @param s Scenario to load.
+  * @note \a s cannot be \c SC_NONE.
+  */
+-void Micropolis::loadScenario(Scenario s)
++bool Micropolis::loadScenario(Scenario s)
+ {
+-    std::string name = NULL;
+-    std::string fname = NULL;
++    std::string name;
++    std::string fname;
+ 
+     cityFileName = "";
+ 
+@@ -483,7 +483,12 @@ void Micropolis::loadScenario(Scenario s)
+     setSpeed(3);
+     setCityTax(7);
+ 
+-    loadFileData(fname);
++    // Native std::string cannot be constructed from NULL. Also do not
++    // announce a successful scenario after an absent/truncated city file.
++    // Callers needing transactional selection load into a fresh simulator.
++    if (!loadFileData(fname)) {
++        return false;
++    }
+ 
+     initWillStuff();
+     initFundingLevel();
+@@ -493,6 +498,7 @@ void Micropolis::loadScenario(Scenario s)
+     doInitialEval = false;
+     doSimInit();
+     didLoadScenario(s, name, fname);
++    return true;
+ }
+ 
+ 
+diff --git a/packages/micropolis-engine/src/micropolis.h b/packages/micropolis-engine/src/micropolis.h
+index 60141c3..171ebbd 100644
+--- a/packages/micropolis-engine/src/micropolis.h
++++ b/packages/micropolis-engine/src/micropolis.h
+@@ -1689,7 +1689,7 @@ public:
+ 
+     bool saveFile(const std::string &filename);
+ 
+-    void loadScenario(Scenario s);
++    bool loadScenario(Scenario s);
+ 
+     void didLoadScenario(int s, const std::string name, const std::string fname);
+ 

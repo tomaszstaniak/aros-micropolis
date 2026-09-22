@@ -1,0 +1,8 @@
+{
+  "repositories": {
+    "micropoliscore": {
+      "url": "https://github.com/SimHacker/MicropolisCore.git",
+      "commit": "69ccf87ed72d2d2950b70cf16ef1391439bd9d48"
+    }
+  }
+}

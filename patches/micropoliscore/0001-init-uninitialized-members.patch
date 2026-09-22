@@ -1,0 +1,66 @@
+Title: 0001-init-uninitialized-members
+Repository: micropoliscore
+Base-Commit: 69ccf87ed72d2d2950b70cf16ef1391439bd9d48
+Requires: none
+Author: aros-micropolis project
+Date: 2026-09-15
+Upstream-Status: candidate
+Scope: generic - any native platform; hidden in WASM by the zeroed heap
+
+Problem:
+  Micropolis reads several members before any assignment:
+  setCallback() deletes the old callback value, initMapArrays() allocates
+  mapBase/mopBase only under 'if (!ptr)', and clearMap()/setters then
+  dereference the results. None of callback, mapBase, mopBase,
+  historyInitialized is initialized in the constructor. A freshly
+  zeroed WASM heap makes them NULL/false by luck, so the browser build
+  never crashed; on AROS (dirty malloc memory) the first calls do:
+  observed setCityTax NULL-callback crash, delete-of-garbage in
+  setCallback, then writes through poisoned map[] column pointers in
+  clearMap().
+Solution:
+  Initialize all four in the constructor initializer list, in
+  declaration order. This is a genuine engine bug on any native
+  platform, not an AROS workaround.
+Validation:
+  Host: ASan build (build/host/harness), 192 phases of haight.cty, clean
+  (2026-09-15). Guest: AROS One 1.3 (ABIv11) under QEMU/TCG, GCC 10.5.0,
+  192 phases, clean exit, RESULT cityTime=4851 year=2001 month=0.
+  Scope: headless
+  harness only - no UI, no scenario path, no save.
+Removal:
+  Permanent fix; candidate for upstreaming to SimHacker/MicropolisCore.
+
+diff --git a/packages/micropolis-engine/src/micropolis.cpp b/packages/micropolis-engine/src/micropolis.cpp
+index 5230c74..63925da 100644
+--- a/packages/micropolis-engine/src/micropolis.cpp
++++ b/packages/micropolis-engine/src/micropolis.cpp
+@@ -86,6 +86,11 @@
+  * Simulator constructor.
+  */
+ Micropolis::Micropolis() :
++        // callback must be initialized: setCallback() deletes the old
++        // value, and init()/setters fire callbacks before any frontend
++        // had a chance to install one. In WASM a fresh zeroed heap hides
++        // this; on AROS (dirty malloc memory) it crashes at once.
++        callback(0),
+         populationDensityMap(0),
+         trafficDensityMap(0),
+         pollutionDensityMap(0),
+@@ -101,7 +106,15 @@ Micropolis::Micropolis() :
+         fireStationEffectMap(0),
+         policeStationMap(0),
+         policeStationEffectMap(0),
+-        comRateMap(0)
++        comRateMap(0),
++        // mapBase/mopBase are lazily allocated by initMapArrays() under
++        // "if (!ptr)" - an uninitialized value skips the allocation and
++        // poisons every map[]/mop[] column pointer. historyInitialized is
++        // read the same way before any assignment. Same zeroed-heap luck
++        // as callback, same crash on dirty malloc memory.
++        mapBase(0),
++        mopBase(0),
++        historyInitialized(false)
+ {
+     initMapArrays();
+ }

@@ -1,0 +1,71 @@
+{
+  "url": "https://github.com/SimHacker/micropolis.git",
+  "commit": "c98f6b08519887b450d9be198bfca5237aab6d0c",
+  "path": "micropolis-activity/images",
+  "files": [
+    {
+      "name": "grres.xpm",
+      "sha256": "09ff310f3892257ca6da382df1c58eb35ac260aeeb3117a733e503242a97998f"
+    },
+    {
+      "name": "grreshi.xpm",
+      "sha256": "475665a4ab9cd08f9e551085cfe31c5d85a047fc704314d7c871eac7f0ba0dbe"
+    },
+    {
+      "name": "grcom.xpm",
+      "sha256": "c7fb630707d840cba23dbe3c68d7eb8cc2aad003b35600d5456af1e9f99e6fc4"
+    },
+    {
+      "name": "grcomhi.xpm",
+      "sha256": "736b483ab9e6e21e5c516e6f01d059756c29e6b50cfe408511984cf017b0f92c"
+    },
+    {
+      "name": "grind.xpm",
+      "sha256": "0be3643af822b7ef67b0851770b5204dfd4b778be435fc72ab7d777688714d2f"
+    },
+    {
+      "name": "grindhi.xpm",
+      "sha256": "cd8dade5f2b2bcca31412bf3e5203be3b041cc6d422fc2459b3261a86543f9da"
+    },
+    {
+      "name": "grmony.xpm",
+      "sha256": "cbfcf766d6bcff99baefead0c693c8f5e93acf0a946c45c31b004fabd63399e5"
+    },
+    {
+      "name": "grmonyhi.xpm",
+      "sha256": "7787600ffeaaf5fe24ae84cbc2bc1e3d91cf1578a239d361369d5013f96b3f77"
+    },
+    {
+      "name": "grcrim.xpm",
+      "sha256": "8a523cf6480f929ad184d05f7cd91315aeb8e544e829629b81c9d2d09c763c56"
+    },
+    {
+      "name": "grcrimhi.xpm",
+      "sha256": "bfa99e39e85ccb6e2c35fd469a768a1f8e5ba3b52448351d07c3586622bd3981"
+    },
+    {
+      "name": "grpoll.xpm",
+      "sha256": "d6267ff368fb8978566180fb59408237fb15f43b697e531d82c7202893a35417"
+    },
+    {
+      "name": "grpollhi.xpm",
+      "sha256": "48164799be6fc2851a4ee39557ad87dd980f88453582645d51eddf8a17f58102"
+    },
+    {
+      "name": "gr10.xpm",
+      "sha256": "068dcdc47e1fa0b73f58ed43855aa1d1f0909decee66db2ddc22bf2a070b189a"
+    },
+    {
+      "name": "gr10hi.xpm",
+      "sha256": "bba7423e5542fb3457ee6f1eb4760d5d626384fef8601e5fdd7a6c89d42be4f9"
+    },
+    {
+      "name": "gr120.xpm",
+      "sha256": "1d8eac23dcc605227f16657a0f7410f871094c13028c1bb59fc47e2eee3a72b2"
+    },
+    {
+      "name": "gr120hi.xpm",
+      "sha256": "a1ce093aae75267b53675c8d189f434911deecbc8691fd48e1c4a31d6201fea2"
+    }
+  ]
+}

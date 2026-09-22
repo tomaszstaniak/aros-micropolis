@@ -1,0 +1,115 @@
+{
+  "url": "https://github.com/SimHacker/micropolis.git",
+  "commit": "c98f6b08519887b450d9be198bfca5237aab6d0c",
+  "path": "micropolis-activity/images",
+  "files": [
+    {
+      "name": "background-micropolis.xpm",
+      "sha256": "dc20893a8cbf623f26efc9ee0982238f7cbf19872c7f229cf2ee27b603daa17f"
+    },
+    {
+      "name": "button1hilite.xpm",
+      "sha256": "387bef025b27a2def9553cade6454de72cf3ffaca4437b42ea1c014c6f2c2188"
+    },
+    {
+      "name": "button2hilite.xpm",
+      "sha256": "7ebfaec1e9bc74c621ce548a7f5625d4ee25463c1702576656630c693ad45dda"
+    },
+    {
+      "name": "button3hilite.xpm",
+      "sha256": "d30436241ecf6a3dde5597e52f20e336d42af77985aae17f88b7950946ac5095"
+    },
+    {
+      "name": "button4hilite.xpm",
+      "sha256": "7ad51b945dd6156e5b004f80c2194a4cb51ed9e8bb2e76e055c3d9d88cd878af"
+    },
+    {
+      "name": "checkbox1hilite.xpm",
+      "sha256": "6acf91a902384b15fb37c6b07eba09206c30a44e83b8db90ec2899bed3faabe0"
+    },
+    {
+      "name": "checkbox1checked.xpm",
+      "sha256": "0416fd0e31073117af1ad641444548acb3bb9da1f8fb1e0ffdae0d05d370c21f"
+    },
+    {
+      "name": "checkbox1hilitechecked.xpm",
+      "sha256": "adf54421f3eb1b9b8406a9cb4d7bcd5a281a84ba01999d86ece293498cd24cfc"
+    },
+    {
+      "name": "checkbox2hilite.xpm",
+      "sha256": "ad1f3c7aa3ff7ff05e85c61ee432cb0643a64b91677feda7e9eb3cdf1c01a209"
+    },
+    {
+      "name": "checkbox2checked.xpm",
+      "sha256": "32411daf162a774b11614c55179d53788079ab87d339b7104a3a61bc461f3017"
+    },
+    {
+      "name": "checkbox2hilitechecked.xpm",
+      "sha256": "d65cfe6b0d2971e32ffe172c4b39af4b291f7037cdc58fa1197fd612f156eaec"
+    },
+    {
+      "name": "checkbox3hilite.xpm",
+      "sha256": "d52f53255dd30979091f040e4dbcd584352dc86ff98572c9a98f234f8f7be10d"
+    },
+    {
+      "name": "checkbox3checked.xpm",
+      "sha256": "2fbb4a1481b7c34e2232f9895728afb23f27e8cfdeaeb50885c06342f56fe0b0"
+    },
+    {
+      "name": "checkbox3hilitechecked.xpm",
+      "sha256": "18ecad8df1d4e16ae4903e8d29a283d1163e9c81cc2bf0af234896f3f732d485"
+    },
+    {
+      "name": "lefthilite.xpm",
+      "sha256": "f563bf43f4b63b444724cd414918303e1919ba220903d13876de7335a9d2e5ed"
+    },
+    {
+      "name": "leftdisabled.xpm",
+      "sha256": "d66f3490bdd26d030c3279e9797c8079d83d000e080dc8d9d2cd71504fbe8083"
+    },
+    {
+      "name": "righthilite.xpm",
+      "sha256": "21b9b2e16b2cf64fed681a020b6f66104d04166a708d11411593482e027cf7a7"
+    },
+    {
+      "name": "rightdisabled.xpm",
+      "sha256": "5cb89f473f8479597e1e30c4cf00d25b119605e728e19303064a4f6ef322d19d"
+    },
+    {
+      "name": "playhilite.xpm",
+      "sha256": "81ce11425a043995c9b47e37a4562f2d8e74cbb4b0a1ad02497bdc06e5cadd61"
+    },
+    {
+      "name": "scenario1hilite.xpm",
+      "sha256": "6b247bef6e69705f24b61af0306f32242065dd9574aa2ad73573bfc4c00dbe7e"
+    },
+    {
+      "name": "scenario2hilite.xpm",
+      "sha256": "1726d969aedb53ec578de065bce52a99c43079838d13e379d61450b4ec605e2a"
+    },
+    {
+      "name": "scenario3hilite.xpm",
+      "sha256": "62ea20b398da70adc3005b2c8e88d0833cc6109f0062063106c665e5f4bac4b0"
+    },
+    {
+      "name": "scenario4hilite.xpm",
+      "sha256": "4defe2a767027ede7b0924bc2c8e762d38cdf4bf822612a9be0f3ad3a951c1e7"
+    },
+    {
+      "name": "scenario5hilite.xpm",
+      "sha256": "fe23e090ad377afbfad40237d8db0dca5c03737dc2c27162d967daddbb0ae5cd"
+    },
+    {
+      "name": "scenario6hilite.xpm",
+      "sha256": "3bac7ae891ef48c18bf8b659960d9aff6ca878fefd08c8371d33f088486955f6"
+    },
+    {
+      "name": "scenario7hilite.xpm",
+      "sha256": "d16548ec6a0aa34d324c90178450c18d35a3a4bafd0b92d4d28095b73962f436"
+    },
+    {
+      "name": "scenario8hilite.xpm",
+      "sha256": "271ed77fe3e597ee6f7f438929ac427f9a5c1f27dea38c082451075b061f96f5"
+    }
+  ]
+}

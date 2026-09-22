@@ -1,0 +1,39 @@
+Title: 0002-voteproblems-off-by-one
+Repository: micropoliscore
+Base-Commit: 69ccf87ed72d2d2950b70cf16ef1391439bd9d48
+Requires: 0001-init-uninitialized-members.patch
+Author: aros-micropolis project
+Date: 2026-09-15
+Upstream-Status: candidate
+Scope: generic - any platform; benign-looking on WASM, crash source on native
+
+Problem:
+  voteProblems() resets its round-robin index with 'problem > PROBNUM', so the loop visits index PROBNUM before wrapping: it reads problemTable[PROBNUM] (past the 10-entry stack buffer in cityEvaluation) and increments problemVotes[PROBNUM] (past the member array, corrupting the following member). Caught by AddressSanitizer on the host at evaluate.cpp:298 during a 192-phase headless run of haight.cty.
+Solution:
+  Use '>= PROBNUM' so the index wraps at the array bound. One-character-class fix; behavior is unchanged for all valid indices.
+Validation:
+  Host: ASan build (build/host/harness), 192 phases of haight.cty, clean
+  (2026-09-15). Guest: AROS One 1.3 (ABIv11) under QEMU/TCG, GCC 10.5.0,
+  192 phases, clean exit, RESULT cityTime=4851 year=2001 month=0.
+  Scope: headless
+  harness only - no UI, no scenario path, no save.
+Removal:
+  Fill in when this is a workaround; permanent fixes say so here.
+
+diff --git a/packages/micropolis-engine/src/evaluate.cpp b/packages/micropolis-engine/src/evaluate.cpp
+index 6d41d5e..aad5b74 100644
+--- a/packages/micropolis-engine/src/evaluate.cpp
++++ b/packages/micropolis-engine/src/evaluate.cpp
+@@ -300,7 +300,11 @@ void Micropolis::voteProblems(const short problemTable[PROBNUM])
+             voteCount++;
+         }
+         problem++;
+-        if (problem > PROBNUM) {
++        // >=, not >: with '>' the loop visits index PROBNUM first, reading
++        // problemTable[PROBNUM] (stack OOB, caught by ASan on the host)
++        // and incrementing problemVotes[PROBNUM] (member OOB, silently
++        // corrupting whatever follows the array).
++        if (problem >= PROBNUM) {
+             problem = 0;
+         }
+         loopCount++;
