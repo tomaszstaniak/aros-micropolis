@@ -94,8 +94,8 @@ part of a package.
 ## Release archives
 
 ```sh
-MICROPOLIS_VERSION=0.1.0-rc3 LHA_WRITER=/path/to/lha bash scripts/package-release.sh
-MICROPOLIS_VERSION=0.1.0-rc3 LHA_WRITER=/path/to/lha bash tests/release/run-tests.sh
+MICROPOLIS_VERSION=0.1.0-rc4 LHA_WRITER=/path/to/lha bash scripts/package-release.sh
+MICROPOLIS_VERSION=0.1.0-rc4 LHA_WRITER=/path/to/lha bash tests/release/run-tests.sh
 ```
 
 The script refuses a dirty tree and the mainline target, rechecks patch

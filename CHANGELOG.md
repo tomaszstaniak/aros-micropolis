@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-rc4 (2026-09-23)
+
+- Give the map, toolbar, Messages, Graphs and Overview windows separate
+  Intuition `Menu` objects. Attaching one menu strip to several windows at
+  once violated the Intuition ownership contract and could leave Wanderer's
+  application-menu state damaged after Micropolis exited.
+- Add `IDCMP_MENUPICK` when each menu is attached, keep checked state in sync
+  between the independent menus, and detach every menu before closing its
+  window.
+
 ## 0.1.0-rc3 (2026-09-23)
 
 First public release candidate, x86_64 AROS ABIv11.

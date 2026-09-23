@@ -12,7 +12,7 @@ palette and radial tool menus, startup and scenario screen, overview map with
 overlays and R/C/I demand, history graphs, budget and evaluation windows,
 located messages and menus, all adapted to native Amiga windows.
 
-**Status:** `0.1.0-rc3`, a release candidate for **x86_64 AROS ABIv11** (AROS
+**Status:** `0.1.0-rc4`, a release candidate for **x86_64 AROS ABIv11** (AROS
 One and other ABIv11 distributions). It is tested on AROS One 1.3 x86_64. A
 mainline (ABIv1) build compiles and links but has not been run; the two ABIs
 are not binary compatible.
