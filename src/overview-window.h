@@ -5,8 +5,8 @@
 #include "chalk-overlay.h"
 #include <vector>
 #include "window-placement.h"
+#include "game-menu.h"
 struct Window;
-struct Menu;
 struct TextFont;
 class Micropolis;
 struct DemandModel;
@@ -17,8 +17,9 @@ public:
     bool open(Window *parent,Micropolis &city,const DemandModel &demand,
               int cameraX,int cameraY,int columns,int rows);
     void close();
-    // Shared application menu, attached on every open.
-    void setMenu(Menu *menu){menu_=menu;}
+    // Every window owns its MenuStrip; Intuition forbids attaching one Menu
+    // object to several windows at once.
+    void checked(GameCommand command,bool value){menu_.checked(command,value);}
     WindowPlacement placement;
     Window *window() const{return win_;}
     void refresh(Micropolis &city,const DemandModel &demand,
@@ -34,7 +35,7 @@ private:
               int cameraX,int cameraY,int columns,int rows);
     void text(int x,int y,const char *value);
     Window *win_=nullptr;
-    Menu *menu_=nullptr;
+    GameMenu menu_;
     const ChalkOverlay *chalk_=nullptr;
     TextFont *font_=nullptr;
     OverviewLayer layer_=OverviewLayer::All;

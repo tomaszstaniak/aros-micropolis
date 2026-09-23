@@ -647,9 +647,9 @@ int main(int argc, char **argv)
     tbWin = openToolbar(*display, layouts[0].tools);
     if (!tbWin)return launchError("Cannot open the tools window.");
     renderToolbar();
-    GameMenu gameMenu;
-    if(!gameMenu.attach(win))return launchError("Cannot create the application menus.");
-    shareMenu(tbWin,gameMenu.strip());
+    GameMenu gameMenu,toolbarMenu;
+    if(!gameMenu.attach(win)||!toolbarMenu.attach(tbWin))
+        return launchError("Cannot create the application menus.");
 
     int camX = (WORLD_W - VIEW_TILES_W) / 2;
     int camY = (WORLD_H - VIEW_TILES_H) / 2;
@@ -698,12 +698,6 @@ int main(int argc, char **argv)
     messageWindow.configurePreview(&previewContext,renderMessagePreview,cb->noticesEnabled);
     GraphWindow graphWindow;
     OverviewWindow overviewWindow;
-    auto shareMenus=[&]{
-        messageWindow.setMenu(gameMenu.strip());
-        graphWindow.setMenu(gameMenu.strip());
-        overviewWindow.setMenu(gameMenu.strip());
-    };
-    shareMenus();
     // Poll results carrying a menu code become the same commands as the map's.
     auto forwardAction=[&](int action)->int {
         if(!isMenuPickResult(action))return action;
@@ -718,18 +712,23 @@ int main(int argc, char **argv)
     int displayRequest = 0; // 1: toggle screen/window, 2: choose another mode
     bool resizePending = false;
     auto syncMenu=[&]{
-        gameMenu.checked(GameCommand::AutoBudget,micropolis->autoBudget);
-        gameMenu.checked(GameCommand::AutoBulldoze,micropolis->autoBulldoze);
-        gameMenu.checked(GameCommand::DisastersEnabled,micropolis->enableDisasters);
-        gameMenu.checked(GameCommand::Sound,micropolis->enableSound);
-        gameMenu.checked(GameCommand::Animation,micropolis->doAnimation);
-        gameMenu.checked(GameCommand::Messages,cb->messagesEnabled);
-        gameMenu.checked(GameCommand::Notices,cb->noticesEnabled);
-        gameMenu.checked(GameCommand::ChalkOverlay,chalkVisible);
-        gameMenu.checked(GameCommand::Pause,!running);
-        gameMenu.checked(GameCommand::Slow,running&&simulation.speed==1);
-        gameMenu.checked(GameCommand::Medium,running&&simulation.speed==2);
-        gameMenu.checked(GameCommand::Fast,running&&simulation.speed==3);
+        auto checked=[&](GameCommand command,bool value){
+            gameMenu.checked(command,value);toolbarMenu.checked(command,value);
+            messageWindow.checked(command,value);graphWindow.checked(command,value);
+            overviewWindow.checked(command,value);
+        };
+        checked(GameCommand::AutoBudget,micropolis->autoBudget);
+        checked(GameCommand::AutoBulldoze,micropolis->autoBulldoze);
+        checked(GameCommand::DisastersEnabled,micropolis->enableDisasters);
+        checked(GameCommand::Sound,micropolis->enableSound);
+        checked(GameCommand::Animation,micropolis->doAnimation);
+        checked(GameCommand::Messages,cb->messagesEnabled);
+        checked(GameCommand::Notices,cb->noticesEnabled);
+        checked(GameCommand::ChalkOverlay,chalkVisible);
+        checked(GameCommand::Pause,!running);
+        checked(GameCommand::Slow,running&&simulation.speed==1);
+        checked(GameCommand::Medium,running&&simulation.speed==2);
+        checked(GameCommand::Fast,running&&simulation.speed==3);
     };
     auto discardModalInput=[&] {
         timer.stop(); // Drop the expired pre-dialog deadline, never catch up.
@@ -1458,16 +1457,14 @@ int main(int argc, char **argv)
                     messageWindow.placement=to.messages;
                     graphWindow.placement=to.graphs;
                     overviewWindow.placement=to.overview;
-                    unshareMenu(tbWin);
+                    toolbarMenu.detach();
                     CloseWindow(tbWin);
                     gameMenu.detach();
                     tbWin = candidateTools;
                     display.swap(candidate);
                     win = display->window;
-                    if(!gameMenu.attach(win))
+                    if(!gameMenu.attach(win)||!toolbarMenu.attach(tbWin))
                         snprintf(feedback,sizeof feedback,"Display changed; application menu unavailable");
-                    shareMenu(tbWin,gameMenu.strip());
-                    shareMenus();
                     cb->parent=win;
                     offBm = display->bitmap;
                     offRp = display->raster;
@@ -1617,7 +1614,7 @@ int main(int argc, char **argv)
     messageWindow.close();
     graphWindow.close();
     overviewWindow.close();
-    if (tbWin) { unshareMenu(tbWin); CloseWindow(tbWin); }
+    if (tbWin) { toolbarMenu.detach(); CloseWindow(tbWin); }
     tbWin = nullptr;
     gameMenu.detach();
     display.reset();

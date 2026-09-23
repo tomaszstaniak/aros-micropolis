@@ -45,12 +45,12 @@ bool GraphWindow::open(Window *parent,Micropolis &city) {
         WA_Title,(IPTR)"Micropolis - Graphs",WA_InnerWidth,width,WA_InnerHeight,height,
         WA_Left,left,WA_Top,topEdge,
         WA_Activate,TRUE,WA_DragBar,TRUE,WA_DepthGadget,TRUE,WA_CloseGadget,TRUE,
-        WA_SimpleRefresh,TRUE,WA_RMBTrap,menu_?FALSE:TRUE,
+        WA_SimpleRefresh,TRUE,WA_RMBTrap,FALSE,
         WA_IDCMP,IDCMP_CLOSEWINDOW|IDCMP_RAWKEY|IDCMP_REFRESHWINDOW|IDCMP_MOUSEBUTTONS,
         TAG_DONE);
     if(!win_){close();return false;}
     SetFont(win_->RPort,font_);
-    shareMenu(win_,menu_);
+    if(!menu_.attach(win_)){close();return false;}
     if(auto *info=GetScreenDrawInfo(screen)) {
         background_=info->dri_Pens[BACKGROUNDPEN];foreground_=info->dri_Pens[TEXTPEN];
         FreeScreenDrawInfo(screen,info);
@@ -64,7 +64,7 @@ void GraphWindow::close() {
     if(win_){
         while(auto *m=GetMsg(win_->UserPort))ReplyMsg(m);
         placement.remember(win_->LeftEdge,win_->TopEdge,win_->Width,win_->Height);
-        unshareMenu(win_);CloseWindow(win_);win_=nullptr;
+        menu_.detach();CloseWindow(win_);win_=nullptr;
     }
     if(font_){CloseFont(font_);font_=nullptr;}
     model_.fresh=false;

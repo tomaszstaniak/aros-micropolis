@@ -114,10 +114,8 @@ inline void Draw(RastPort *,int,int) {}
 inline void SetAPen(RastPort *,int) {}
 inline void SetDrMd(RastPort *,int) {}
 inline void BeginRefresh(Window *) {}
-// Shared application menu (game-menu.cpp is not linked into window tests).
+// Application menus are modelled here; game-menu.cpp is not linked.
 inline int menuStrips=0;
-inline bool shareMenu(Window *w,Menu *m) {if(!w||!m)return false;w->MenuStrip=m;w->IDCMPFlags|=IDCMP_MENUPICK;++menuStrips;return true;}
-inline void unshareMenu(Window *w) {if(w&&w->MenuStrip){w->MenuStrip=nullptr;--menuStrips;}}
 #define MICROPOLIS_SHARED_MENU_STUB 1
 inline void EndRefresh(Window *,int) {}
 '''
@@ -127,6 +125,18 @@ fixture = r'''
 #include <algorithm>
 #include <cstdio>
 #include <type_traits>
+
+GameMenu::~GameMenu(){detach();}
+bool GameMenu::attach(Window *window){
+    detach();if(!window)return false;window_=window;menu_=new Menu;
+    window_->MenuStrip=menu_;window_->IDCMPFlags|=IDCMP_MENUPICK;++menuStrips;return true;
+}
+void GameMenu::detach(){
+    if(window_&&window_->MenuStrip==menu_)window_->MenuStrip=nullptr;
+    if(menu_){delete menu_;--menuStrips;}window_=nullptr;menu_=nullptr;visual_=nullptr;
+}
+GameCommand GameMenu::pick(unsigned short code)const{return code==MENUNULL?GameCommand::None:GameCommand::About;}
+void GameMenu::checked(GameCommand,bool){}
 struct Micropolis {long cityTime=123;};
 namespace emscripten {struct val {};}
 struct Callback {

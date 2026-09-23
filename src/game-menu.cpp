@@ -55,9 +55,7 @@ NewMenu entries[]={
 MenuItem *findItem(Menu *menu,GameCommand command){for(Menu *m=menu;m;m=m->NextMenu)for(MenuItem *i=m->FirstItem;i;i=i->NextItem){if((GameCommand)(IPTR)GTMENUITEM_USERDATA(i)==command)return i;for(MenuItem*s=i->SubItem;s;s=s->NextItem)if((GameCommand)(IPTR)GTMENUITEM_USERDATA(s)==command)return s;}return nullptr;}
 }
 GameMenu::~GameMenu(){detach();}
-bool GameMenu::attach(Window *window){detach();if(!window)return false;visual_=GetVisualInfoA(window->WScreen,nullptr);if(!visual_)return false;menu_=CreateMenusA(entries,nullptr);if(!menu_||!LayoutMenusA(menu_,visual_,nullptr)){detach();return false;}if(!SetMenuStrip(window,menu_)){detach();return false;}window_=window;return true;}
+bool GameMenu::attach(Window *window){detach();if(!window)return false;visual_=GetVisualInfoA(window->WScreen,nullptr);if(!visual_)return false;menu_=CreateMenusA(entries,nullptr);if(!menu_||!LayoutMenusA(menu_,visual_,nullptr)){detach();return false;}if(!SetMenuStrip(window,menu_)){detach();return false;}window_=window;if(!ModifyIDCMP(window,window->IDCMPFlags|IDCMP_MENUPICK)){detach();return false;}return true;}
 void GameMenu::detach(){if(window_&&menu_)ClearMenuStrip(window_);if(menu_)FreeMenus(menu_);if(visual_)FreeVisualInfo(visual_);window_=nullptr;menu_=nullptr;visual_=nullptr;}
 GameCommand GameMenu::pick(unsigned short code)const{if(!menu_||code==MENUNULL)return GameCommand::None;auto *i=ItemAddress(menu_,code);return i?(GameCommand)(IPTR)GTMENUITEM_USERDATA(i):GameCommand::None;}
 void GameMenu::checked(GameCommand command,bool value){if(auto*i=findItem(menu_,command)){if(value)i->Flags|=CHECKED;else i->Flags&=~CHECKED;}}
-bool shareMenu(Window *window,Menu *menu){if(!window||!menu||!SetMenuStrip(window,menu))return false;ModifyIDCMP(window,window->IDCMPFlags|IDCMP_MENUPICK);return true;}
-void unshareMenu(Window *window){if(window&&window->MenuStrip)ClearMenuStrip(window);}

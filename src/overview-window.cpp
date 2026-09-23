@@ -52,13 +52,14 @@ bool OverviewWindow::open(Window *parent,Micropolis &city,const DemandModel &dem
     win_=OpenWindowTags(nullptr,WA_CustomScreen,(IPTR)screen,WA_Title,(IPTR)"Micropolis - Overview",
         WA_InnerWidth,width,WA_InnerHeight,height,WA_Left,left,WA_Top,top,
         WA_Activate,TRUE,WA_DragBar,TRUE,WA_DepthGadget,TRUE,WA_CloseGadget,TRUE,
-        WA_SimpleRefresh,TRUE,WA_RMBTrap,menu_?FALSE:TRUE,WA_ReportMouse,TRUE,
+        WA_SimpleRefresh,TRUE,WA_RMBTrap,FALSE,WA_ReportMouse,TRUE,
         WA_IDCMP,IDCMP_CLOSEWINDOW|IDCMP_RAWKEY|IDCMP_REFRESHWINDOW|IDCMP_MOUSEBUTTONS|IDCMP_MOUSEMOVE,TAG_DONE);
-    if(!win_){close();return false;}SetFont(win_->RPort,font_);shareMenu(win_,menu_);
+    if(!win_){close();return false;}SetFont(win_->RPort,font_);
+    if(!menu_.attach(win_)){close();return false;}
     if(auto *i=GetScreenDrawInfo(screen)){background_=i->dri_Pens[BACKGROUNDPEN];foreground_=i->dri_Pens[TEXTPEN];shine_=i->dri_Pens[SHINEPEN];shadow_=i->dri_Pens[SHADOWPEN];FreeScreenDrawInfo(screen,i);}
     draw(city,demand,cx,cy,columns,rows);return true;
 }
-void OverviewWindow::close(){panning_=false;if(win_){while(auto *m=GetMsg(win_->UserPort))ReplyMsg(m);placement.remember(win_->LeftEdge,win_->TopEdge,win_->Width,win_->Height);unshareMenu(win_);CloseWindow(win_);win_=nullptr;}if(font_){CloseFont(font_);font_=nullptr;}}
+void OverviewWindow::close(){panning_=false;if(win_){while(auto *m=GetMsg(win_->UserPort))ReplyMsg(m);placement.remember(win_->LeftEdge,win_->TopEdge,win_->Width,win_->Height);menu_.detach();CloseWindow(win_);win_=nullptr;}if(font_){CloseFont(font_);font_=nullptr;}}
 void OverviewWindow::text(int x,int y,const char *s){Move(win_->RPort,win_->BorderLeft+x,win_->BorderTop+y);Text(win_->RPort,s,strlen(s));}
 void OverviewWindow::draw(Micropolis &city,const DemandModel &demand,int cx,int cy,int columns,int rows) {
     if(!win_)return;tiles_.resize(overviewWorldW*overviewWorldH);samples_.resize(tiles_.size());

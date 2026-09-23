@@ -57,7 +57,7 @@ bool MessageWindow::open(Window *parent,const MessageHistory &history) {
         WA_Title,(IPTR)title_.c_str(),WA_InnerWidth,width,WA_InnerHeight,height,
         WA_Left,left,WA_Top,topEdge,
         WA_Activate,TRUE,WA_DragBar,TRUE,WA_DepthGadget,TRUE,WA_CloseGadget,TRUE,
-        WA_SimpleRefresh,TRUE,WA_RMBTrap,menu_?FALSE:TRUE,
+        WA_SimpleRefresh,TRUE,WA_RMBTrap,FALSE,
         WA_IDCMP,IDCMP_CLOSEWINDOW|IDCMP_RAWKEY|IDCMP_REFRESHWINDOW|IDCMP_MOUSEBUTTONS,
         TAG_DONE);
     if(!win_) {
@@ -65,7 +65,7 @@ bool MessageWindow::open(Window *parent,const MessageHistory &history) {
         return false;
     }
     SetFont(win_->RPort,font_);
-    shareMenu(win_,menu_);
+    if(!menu_.attach(win_)){close();return false;}
     if(auto *info=GetScreenDrawInfo(screen)) {
         background_=info->dri_Pens[BACKGROUNDPEN];
         foreground_=info->dri_Pens[TEXTPEN];
@@ -81,7 +81,7 @@ void MessageWindow::close() {
     if(win_) {
         while(auto *msg=GetMsg(win_->UserPort)) ReplyMsg(msg);
         placement.remember(win_->LeftEdge,win_->TopEdge,win_->Width,win_->Height);
-        unshareMenu(win_);
+        menu_.detach();
         CloseWindow(win_);
         win_=nullptr;
     }

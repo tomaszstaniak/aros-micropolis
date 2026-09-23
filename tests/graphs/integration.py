@@ -33,6 +33,18 @@ fixture=r'''
 #include "graph-window.h"
 #include "micropolis.h"
 #include <cstdio>
+
+GameMenu::~GameMenu(){detach();}
+bool GameMenu::attach(Window *window){
+    detach();if(!window)return false;window_=window;menu_=new Menu;
+    window_->MenuStrip=menu_;window_->IDCMPFlags|=IDCMP_MENUPICK;++menuStrips;return true;
+}
+void GameMenu::detach(){
+    if(window_&&window_->MenuStrip==menu_)window_->MenuStrip=nullptr;
+    if(menu_){delete menu_;--menuStrips;}window_=nullptr;menu_=nullptr;visual_=nullptr;
+}
+GameCommand GameMenu::pick(unsigned short code)const{return code==MENUNULL?GameCommand::None:GameCommand::About;}
+void GameMenu::checked(GameCommand,bool){}
 int checks=0,failures=0;
 void check(bool ok,const char *label){++checks;if(!ok)++failures;printf("%s %s\n",ok?"PASS":"FAIL",label);}
 void event(Window *w,int cls,int code=0,int x=0,int y=0){
@@ -78,16 +90,19 @@ int main(){
     check(blits.size()==before+15,"modal drain still redraws exposed native window");
     event(w,IDCMP_RAWKEY,0x45);check(ui.poll(city)==0 && !ui.window(),"Escape closes graph only");
     check(ui.open(&parent,city) && text(ui.window(),"120-year history"),"reopen after display change retains selected range");
-    // Shared application menu and remembered placement (2026-09-23).
-    Menu strip;ui.close();ui.setMenu(&strip);
-    check(ui.open(&parent,city) && ui.window()->MenuStrip==&strip && (ui.window()->IDCMPFlags&IDCMP_MENUPICK),
-          "graph window carries the shared application menu");
+    // Every native window owns a separate MenuStrip. Intuition requires a
+    // Menu to be unattached before SetMenuStrip; sharing the same pointer
+    // between windows corrupts that contract.
+    Menu strip;parent.MenuStrip=&strip;ui.close();
+    check(ui.open(&parent,city) && ui.window()->MenuStrip &&
+          ui.window()->MenuStrip!=parent.MenuStrip && (ui.window()->IDCMPFlags&IDCMP_MENUPICK),
+          "graph window owns an independent application menu");
     event(ui.window(),IDCMP_MENUPICK,0x0021);
     check(ui.poll(city)==(0x10000|0x0021),"menu pick is forwarded as a menu code, not a key");
     event(ui.window(),IDCMP_MENUPICK,MENUNULL);check(ui.poll(city)==0,"MENUNULL is ignored");
     event(ui.window(),IDCMP_MENUPICK,0x0021);check(ui.poll(city,true)==0,"menu pick queued behind a modal is discarded");
     ui.window()->LeftEdge=30;ui.window()->TopEdge=40;ui.close();
-    check(menuStrips==0,"menu strip cleared before the window closes");
+    check(menuStrips==0,"independent menu freed before the window closes");
     check(ui.open(&parent,city) && ui.window()->LeftEdge==30 && ui.window()->TopEdge==40,
           "reopening restores the player's position");
     ui.window()->LeftEdge=900;ui.window()->TopEdge=700;ui.close();

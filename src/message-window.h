@@ -5,8 +5,8 @@
 #include <vector>
 
 #include "window-placement.h"
+#include "game-menu.h"
 struct Window;
-struct Menu;
 struct TextFont;
 using MessagePreviewRenderer=void(*)(void *,const CityMessage &,Window *,int,int);
 
@@ -18,8 +18,9 @@ public:
     MessageWindow &operator=(const MessageWindow &) = delete;
     bool open(Window *parent,const MessageHistory &history);
     void close();
-    // Shared application menu, attached on every open.
-    void setMenu(Menu *menu){menu_=menu;}
+    // Every window owns its MenuStrip; Intuition forbids attaching one Menu
+    // object to several windows at once.
+    void checked(GameCommand command,bool value){menu_.checked(command,value);}
     WindowPlacement placement;
     Window *window() const;
     void configurePreview(void *context,MessagePreviewRenderer renderer,
@@ -37,7 +38,7 @@ private:
     void button(int index,const char *label,bool enabled);
 
     Window *win_=nullptr;
-    Menu *menu_=nullptr;
+    GameMenu menu_;
     TextFont *font_=nullptr;
     std::string title_="Micropolis - Messages";
     CityMessage selected_{};
